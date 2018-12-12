@@ -1,0 +1,6 @@
+framework module Pods_InClassExercisesStarter {
+  umbrella header "Pods-InClassExercisesStarter-umbrella.h"
+
+  export *
+  module * { export * }
+}
