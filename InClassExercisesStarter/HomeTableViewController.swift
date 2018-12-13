@@ -14,10 +14,6 @@ import MapKit
 class HomeTableViewController: UITableViewController,CLLocationManagerDelegate{
     var manager:CLLocationManager!
     var username = ""
-//    var latitude = 43.6532
-//    var longitude = -79.3832
-//    var l = 0.0001
-    //set value of l into user defaults
     var db:Firestore!
     var items = ["Meon", "Pikachu", "Squirtle","Zubur","Jigglypuff"]
     var images = ["meon.png", "pikachu.png", "squirtle.png","zubur.png","jigglypuff.png"]
@@ -25,43 +21,15 @@ class HomeTableViewController: UITableViewController,CLLocationManagerDelegate{
     override func viewDidLoad() {
         super.viewDidLoad()
         db = Firestore.firestore()
-        
-//        if UserDefaults.standard.object(forKey: "lat") != nil
-//        {
-//            latitude =  Double(UserDefaults.standard.string(forKey: "lat")!) ?? 43.6532
-//            longitude =  Double(UserDefaults.standard.string(forKey: "lng")!) ?? -79.3832
-//        }
         manager = CLLocationManager()
         manager.delegate = self
-        
-        // how accurate do you want the lkocation to be?
         manager.desiredAccuracy = kCLLocationAccuracyBest
-        
-        // ask for permission to get the location
         manager.requestAlwaysAuthorization()
-        
-        // tell the manager to get the person's location
         manager.startUpdatingLocation()
         pokemonData()
         
     }
-//    
-//    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-//        print("got a new location")
-//        
-//        if (locations.count == 0) {
-//            print("Error getting your location!")
-//            return
-//        }
-//        else {
-//            print(locations[0])
-//            let searchRequest = MKLocalSearchRequest()
-//            latitude = locations[0].coordinate.latitude
-//            longitude = locations[0].coordinate.longitude
-//            
-//        }
-//        
-//    }
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
@@ -89,20 +57,7 @@ class HomeTableViewController: UITableViewController,CLLocationManagerDelegate{
         let i = indexPath.row
         
         print("Person clicked in row number: \(i)")
-        //UserData()
-        //
-        // if (i != nil) {
         performSegue(withIdentifier: "pokemonDetail", sender: nil)
-        // }
-        //
-        //        else if (i == 1) {
-        //            performSegue(withIdentifier: "makeReservation", sender: nil)
-        //        }
-        //
-        //        else if (i == 2) {
-        //            performSegue(withIdentifier: "showRest", sender: nil)
-        //        }
-        
         
     }
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -164,29 +119,5 @@ class HomeTableViewController: UITableViewController,CLLocationManagerDelegate{
             "level" : 1
             ])
     }
-//    func  UserData() {
-//        let user = db.collection("users")
-//        //let pokemon = db.collection("Pokemon").document("Meon")
-//
-//        //        user.document("jenelle@gmail.com").setData([
-//        //            "name": "jenelle@gmail.com",
-//        //            "latitude": 43.6532 ,
-//        //            "longitude": -79.3832,
-//        //            "pokemon": "Meon"
-//        //            ])
-//        latitude = latitude + l
-//        longitude = longitude - l
-//        let userDefaults = UserDefaults.standard
-//        userDefaults.setValue(latitude, forKey: "lat")
-//        userDefaults.setValue(longitude, forKey: "lng")
-//        userDefaults.synchronize()
-//        var n = self.username
-//        user.document(n).setData([
-//            "name": self.username,
-//            "latitude": latitude,
-//            "longitude": longitude,
-//            "pokemon": "Meon"
-//            ])
-//    }
-//
+
 }

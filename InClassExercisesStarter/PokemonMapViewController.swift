@@ -82,7 +82,7 @@ class PokemonMapViewController: UIViewController, MKMapViewDelegate, CLLocationM
                                 //print(json2);\
                                 var pName = json2["species"]["name"].string!;
                                 print(json2["species"]["name"].string!);
-                                print(json2["sprites"]["front_default"].string!);
+//                                print(json2["sprites"]["front_default"].string!);
                                 print("--------------HP: ");
                                 print(json2["stats"][5]["base_stat"]);
                                 var pHp = json2["stats"][5]["base_stat"].int!
@@ -225,7 +225,7 @@ class PokemonMapViewController: UIViewController, MKMapViewDelegate, CLLocationM
        // mapView.addAnnotations(self.annotations)
 
         
-        let x = CLLocationCoordinate2DMake(43.6751, -79.4052)
+        let x = CLLocationCoordinate2DMake(43.6533, -79.3833)
         let y = MKCoordinateSpanMake(0.01, 0.01)
         let z = MKCoordinateRegionMake(x, y)
         self.mapView.setRegion(z, animated: true)
@@ -251,7 +251,7 @@ class PokemonMapViewController: UIViewController, MKMapViewDelegate, CLLocationM
                 for document in querySnapshot!.documents {
                     //print("\(document.documentID) = \(document.data())")
                     self.userdata[document.documentID] =  document.data()
-                    print(self.userdata[document.documentID] ?? "unknown")
+                    print("\(self.userdata[document.documentID] , document.data())")
                 }
            // var annotations = [MKPointAnnotation]()
             for i in self.userdata.values {
@@ -438,8 +438,9 @@ class PokemonMapViewController: UIViewController, MKMapViewDelegate, CLLocationM
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
-        let n1 = segue.destination as! ScoreBoardTableViewController
-        n1.userdata = userdata
+        let n1 = segue.destination as! GameStartVC
+        n1.userName = self.username
+      
     }
     
     

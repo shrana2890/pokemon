@@ -37,13 +37,9 @@ class PokermonDetailViewController:UIViewController,CLLocationManagerDelegate  {
     var pokemonName = ""
     var rowImage = ""
     var r = 0
-    //var items = ["Mew", "Pikachu", "Squirtle","Zubar"]
-    
     @IBOutlet weak var labelSucessMessage: UILabel!
     @IBOutlet weak var pokemonDetailLabel: UILabel!
     @IBOutlet weak var pokemonImage: UIImageView!
-    //@IBOutlet weak var lblResult: UILabel!
-    // Mark: Firestore variables
     var bc = ""
     @IBAction func buttonSelectPokemon(_ sender: Any) {
         db = Firestore.firestore()
@@ -57,32 +53,20 @@ class PokermonDetailViewController:UIViewController,CLLocationManagerDelegate  {
             "latitude": self.latitude,
             "longitude": self.longitude,
             ])
-        UserData()
+        
+           UserData()
+          performSegue(withIdentifier: "mapSegue", sender: nil)
     }
-    // MARK: Default Functions
     override func viewDidLoad() {
         super.viewDidLoad()
-       
-        //let name = self.name
         db = Firestore.firestore()
         if (self.status != nil){
             self.userStatus = "online"
         }
-        //        if UserDefaults.standard.object(forKey: "lat") != nil
-        //        {
-        //            latitude =  Double(UserDefaults.standard.string(forKey: "lat")!) ?? 43.6532
-        //            longitude =  Double(UserDefaults.standard.string(forKey: "lng")!) ?? -79.3832
-        //        }
         manager = CLLocationManager()
         manager.delegate = self
-        
-        // how accurate do you want the lkocation to be?
         manager.desiredAccuracy = kCLLocationAccuracyBest
-        
-        // ask for permission to get the location
         manager.requestAlwaysAuthorization()
-        
-        // tell the manager to get the person's location
         manager.startUpdatingLocation()
         let ref = db.collection("Pokemon").whereField("name", isEqualTo: self.pokemonName)
         ref.getDocuments() {
@@ -108,9 +92,6 @@ class PokermonDetailViewController:UIViewController,CLLocationManagerDelegate  {
                 self.labelSucessMessage.text! = "Error getting documents: \(err)"
             }
         }
-        
-        
-        //set lat and long for new user
         db.collection("latlng").getDocuments() {
             (querySnapshot, err) in
             if let err = err {
@@ -154,43 +135,47 @@ class PokermonDetailViewController:UIViewController,CLLocationManagerDelegate  {
     func  UserData() {
         
         
-        let user = db.collection("users")
+        let user = db.collection("users").whereField("name", isEqualTo: self.username)
         user.getDocuments() {
             (querySnapshot, err) in
-            if let err = err {
-                print("Error getting documents: \(err)")
-            } else {
-               for document in querySnapshot!.documents {
-              if(document.documentID != self.username){
-              var n = self.username
-             user.document(n).setData([
-            "name": self.username,
-            "latitude": self.latitude,
-            "longitude": self.longitude,
-            "pokemon": self.pokemonName,
-            "icon": self.rowImage,
-            "status": self.userStatus,
-            "money" : 200,
-            "pokemonsDefeated" : 0
-            ])
-              }else{
+            if (querySnapshot?.count ?? 0 > 0) {
+            print("old:\( querySnapshot?.count)")
+            
+                for document in querySnapshot!.documents {
+                    //if(document.documentID == self.username){
+                        print("oldoldold old old old old1111111111111111")
+                        let use = self.db.collection("users")
+                        var n = self.username
+                        use.document(n).setData([
+                            "name": self.username,
+                            "latitude": document["latitude"]! as! Double,
+                            "longitude": document["longitude"]! as! Double,
+                            "pokemon": self.pokemonName,
+                            "icon": self.rowImage,
+                            "status": "online",
+                            "money" : document["money"]! as! Int,
+                            "pokemonsDefeated" : document["pokemonsDefeated"]! as! Int
+                            ])
+                   }
+                }
+               else{
+                print("new")
+                let use = self.db.collection("users")
                 var n = self.username
-                user.document(n).setData([
+                use.document(n).setData([
                     "name": self.username,
-                    "latitude": document["latitude"]! as! Double,
-                    "longitude": document["longitude"]! as! Double,
+                    "latitude": self.latitude,
+                    "longitude": self.longitude,
                     "pokemon": self.pokemonName,
                     "icon": self.rowImage,
-                    "status": self.userStatus,
-                    "money" : document["money"]! as! Int,
-                    "pokemonsDefeated" : document["pokemonsDefeated"]! as! Int
+                    "status": "online",
+                    "money" : 200,
+                    "pokemonsDefeated" : 0
                     ])
-                //self.userdata[document.documentID] =  document.data()
-                }
-                }
             }
         }
-        let userPokemon = db.collection("userPokemon")
+
+        let userPokemon = self.db.collection("userPokemon")
         var s = self.username
         userPokemon.document(s).setData([
             "name": self.pokemonName ?? "Meon",
@@ -204,14 +189,13 @@ class PokermonDetailViewController:UIViewController,CLLocationManagerDelegate  {
     
     }
     
-    
-    
     // MARK: - Navigation
     
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destination.
         // Pass the selected object to the new view controller.
+        print("segue prepared")
         let n1 = segue.destination as! PokemonMapViewController
         n1.pokemonName = self.pokemonName
         n1.username = self.username

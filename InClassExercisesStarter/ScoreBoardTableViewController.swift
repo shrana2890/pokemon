@@ -7,12 +7,47 @@
 //
 
 import UIKit
+import FirebaseFirestore
+import  Firebase
 
 class ScoreBoardTableViewController: UITableViewController {
-     var userdata:[String:[String:Any]] = [:]
+     var username = ""
+    var userEmail:[String] = [String]()
+    var userPokemon :[String] = [String]()
+    var userDefeatedPokemon:[Int] = [Int]()
+    var userdata:[String:[String:Any]] = [:]
+    var result : [String] = [String]()
+    var count = 0
+    
+     var db:Firestore!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+         db = Firestore.firestore()
+        
+        let ref = db.collection("users")
+        ref.getDocuments() {
+            (querySnapshot, err) in
+            if (err == nil){
+                 print("$$$$$$$$$$$$$$$$")
+                 print("$Welcome to score board")
+                 print("$$$$$$$$$$$$$$$$")
+                for document in querySnapshot!.documents {
+                    self.count = querySnapshot?.count ?? 0
+                      print(self.count)
+                    
+                    print("\(document.documentID) => \(document.data())")
+                    self.userdata[document.documentID] =  document.data()
+                    self.userEmail.append(document["name"]! as! String)
+                    self.userPokemon.append(document["pokemon"]! as! String)
+                    self.userDefeatedPokemon.append(document["pokemonsDefeated"]! as! Int)
+                    
+                }
+            }
+            else if let err = err {
+                print("this user is not in database")
+            }
+        }
 
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
@@ -25,23 +60,26 @@ class ScoreBoardTableViewController: UITableViewController {
 
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
-        return 0
+        return 1
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return 0
+        print("\(self.count)")
+        return self.count
     }
 
-    /*
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
 
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "scoreCell", for: indexPath)
+       // let single = self.result[indexPath.row]
+        //cell.textLabel?.text = userdata[single]?["pokemon"] as? String
+         cell.textLabel?.text = self.userEmail[indexPath.row]
         // Configure the cell...
 
         return cell
     }
-    */
+
 
     /*
     // Override to support conditional editing of the table view.

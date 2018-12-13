@@ -8,6 +8,8 @@
 import UIKit
 
 class GameStartVC: UIViewController {
+      var userName = ""
+    
     var attack1Count = 0
     var attack2Count = 0
     var attack3Count = 0
@@ -93,15 +95,17 @@ class GameStartVC: UIViewController {
     }
     
 
-    /*
+   
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destination.
         // Pass the selected object to the new view controller.
+        let n1 = segue.destination as! ScoreBoardTableViewController
+        n1.username = self.userName
     }
-    */
+  
     @objc func scoreButton()  {
         let vcontrol = storyboard?.instantiateViewController(withIdentifier: "TVC")
         self.navigationController?.pushViewController(vcontrol!, animated: true)
